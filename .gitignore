@@ -39,3 +39,13 @@
 
 # debug information files
 *.dwo
+
+# Project Specific
+include/glm/doc/api/**/*.html
+
+# VisualStudioCode
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
