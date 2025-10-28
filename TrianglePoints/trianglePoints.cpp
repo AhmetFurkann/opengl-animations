@@ -179,13 +179,11 @@ int main(int argc, char const *argv[])
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-
     // 4. Set up vertex data
     // For points
     glm::vec3 top = glm::vec3(0.0f, 0.5f, 0.0f);
     glm::vec3 bottomLeft = glm::vec3(-0.5f, -0.5f, 0.0f);
     glm::vec3 bottomRight = glm::vec3(0.5f, -0.5f, 0.0f);
-
 
     // Text of Points
     glm::vec3 topTextCoords = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -282,7 +280,6 @@ int main(int argc, char const *argv[])
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    // 5. Draw
     glEnable(GL_PROGRAM_POINT_SIZE);  // This is important!
     glUseProgram(shaderProgram);
     glBindVertexArray(VAO);

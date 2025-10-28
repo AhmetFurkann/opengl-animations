@@ -10,3 +10,4 @@ set(CMAKE_LINKER_FLAGS_RELEASE "${CMAKE_LINKER_FLAGS_RELEASE} -fsanitize=address
 add_subdirectory(shared)
 add_subdirectory(TrianglePoints)
 add_subdirectory(TriangleLines)
+add_subdirectory(Quad)
