@@ -26,8 +26,8 @@
 #include "textRenderer.h"
 #include "utils.h"
 
-#define WINDOW_WIDTH 1920.0
-#define WINDOW_HEIGTH 1080.0
+#define WINDOW_WIDTH 3840.0f
+#define WINDOW_HEIGHT 2160.0f
 
 TextRenderer textRenderer;
 std::map<GLchar, Character> Characters;
@@ -46,7 +46,7 @@ int main(int argc, char const *argv[])
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_SAMPLES, 8);
 
-    GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGTH, "Triangle Points", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Quad Demo", NULL, NULL);
 	if(window == NULL){
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
@@ -59,7 +59,7 @@ int main(int argc, char const *argv[])
 		return -1;
 	}
 
-    glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGTH);
+    glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glEnable(GL_MULTISAMPLE);
     
@@ -68,7 +68,7 @@ int main(int argc, char const *argv[])
         layout (location = 0) in vec3 aPos;
         void main() {
             gl_Position = vec4(aPos, 1.0);
-            gl_PointSize = 15.0f; // Size in pixels
+            gl_PointSize = 35.0f; // Size in pixels
         }
     )";
 
@@ -195,30 +195,30 @@ int main(int argc, char const *argv[])
     glm::vec3 topRightTextCoords = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 topLeftTextCoords = glm::vec3(0.0f, 0.0f, 0.0f);
 
-    float offsetTopX = 0.075f;
+    float offsetTopX = 0.070f;
     float offsetTopY = 0.090f;
 
-    topRightTextCoords.x = mapValue(topRight.x - offsetTopX, -1.0f, 1.0f, 0.0f, 1920.0f);
-    topRightTextCoords.y = mapValue(topRight.y + offsetTopY, -1.0f, 1.0f, 0.0f, 1080.0f);
+    topRightTextCoords.x = mapValue(topRight.x - offsetTopX, -1.0f, 1.0f, 0.0f, WINDOW_WIDTH);
+    topRightTextCoords.y = mapValue(topRight.y + offsetTopY, -1.0f, 1.0f, 0.0f, WINDOW_HEIGHT);
     topRightText         = glmToText(topRight, precisionVal);
 
-    topLeftTextCoords.x = mapValue(topLeft.x - offsetTopX, -1.0f, 1.0f, 0.0f, 1920.0f);
-    topLeftTextCoords.y = mapValue(topLeft.y + offsetTopY, -1.0f, 1.0f, 0.0f, 1080.0f);
+    topLeftTextCoords.x = mapValue(topLeft.x - offsetTopX, -1.0f, 1.0f, 0.0f, WINDOW_WIDTH);
+    topLeftTextCoords.y = mapValue(topLeft.y + offsetTopY, -1.0f, 1.0f, 0.0f, WINDOW_HEIGHT);
     topLeftText         = glmToText(topLeft, precisionVal);
 
 
     glm::vec3 bottomRightTextCoords = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 bottomLeftTextCoords = glm::vec3(0.0f, 0.0f, 0.0f);
 
-    float offsetbottomX = 0.100;
-    float offsetbottomY = 0.100;
+    float offsetbottomX = 0.070f;
+    float offsetbottomY = 0.100f;
 
-    bottomRightTextCoords.x = mapValue(bottomRight.x - offsetbottomX, -1.0f, 1.0f, 0.0f, 1920.0f);
-    bottomRightTextCoords.y = mapValue(bottomRight.y - offsetbottomY, -1.0f, 1.0f, 0.0f, 1080.0f);
+    bottomRightTextCoords.x = mapValue(bottomRight.x - offsetbottomX, -1.0f, 1.0f, 0.0f, WINDOW_WIDTH);
+    bottomRightTextCoords.y = mapValue(bottomRight.y - offsetbottomY, -1.0f, 1.0f, 0.0f, WINDOW_HEIGHT);
     bottomRightText         = glmToText(bottomRight, precisionVal);
 
-    bottomLeftTextCoords.x = mapValue(bottomLeft.x - offsetbottomX, -1.0f, 1.0f, 0.0f, 1920.0f);
-    bottomLeftTextCoords.y = mapValue(bottomLeft.y - offsetbottomY, -1.0f, 1.0f, 0.0f, 1080.0f);
+    bottomLeftTextCoords.x = mapValue(bottomLeft.x - offsetbottomX, -1.0f, 1.0f, 0.0f, WINDOW_WIDTH);
+    bottomLeftTextCoords.y = mapValue(bottomLeft.y - offsetbottomY, -1.0f, 1.0f, 0.0f, WINDOW_HEIGHT);
     bottomLeftText         = glmToText(bottomLeft, precisionVal);
 
 
@@ -269,12 +269,11 @@ int main(int argc, char const *argv[])
         glDrawArrays(GL_POINTS, 0, pointCounts);
 
         unsigned int lineCounts = 0;
-        float pauseDuration = 3.0f;
 
-        textRenderer.renderText(Characters, textVAO, textVBO, topRightText, topRightTextCoords.x, topRightTextCoords.y, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-        textRenderer.renderText(Characters, textVAO, textVBO, topLeftText, topLeftTextCoords.x, topLeftTextCoords.y, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-        textRenderer.renderText(Characters, textVAO, textVBO, bottomRightText, bottomRightTextCoords.x, bottomRightTextCoords.y, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-        textRenderer.renderText(Characters, textVAO, textVBO, bottomLeftText, bottomLeftTextCoords.x, bottomLeftTextCoords.y, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+        textRenderer.renderText(Characters, textVAO, textVBO, topRightText, topRightTextCoords.x, topRightTextCoords.y, 1.5f, glm::vec3(0.5, 0.8f, 0.2f));
+        textRenderer.renderText(Characters, textVAO, textVBO, topLeftText, topLeftTextCoords.x, topLeftTextCoords.y, 1.5f, glm::vec3(0.5, 0.8f, 0.2f));
+        textRenderer.renderText(Characters, textVAO, textVBO, bottomRightText, bottomRightTextCoords.x, bottomRightTextCoords.y, 1.5f, glm::vec3(0.5, 0.8f, 0.2f));
+        textRenderer.renderText(Characters, textVAO, textVBO, bottomLeftText, bottomLeftTextCoords.x, bottomLeftTextCoords.y, 1.5f, glm::vec3(0.5, 0.8f, 0.2f));
 
         float time = glm::clamp(elapsed, 0.0f, segmentDuration);
         
@@ -373,6 +372,7 @@ int main(int argc, char const *argv[])
         glUseProgram(shaderProgram);
         glEnableVertexAttribArray(0);
         glBindVertexArray(quadLineVAO);
+        glLineWidth(10);
         glDrawArrays(GL_LINES, 0, lineCounts);
 
         if (isAnimationFinished){
@@ -392,12 +392,12 @@ int main(int argc, char const *argv[])
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
             
-            if (elapsed < (6 * segmentDuration + pauseDuration)){
+            if (elapsed < (7 * segmentDuration)){
                 glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
             }
-            else if (elapsed < (7 * segmentDuration + pauseDuration)){
+            else if (elapsed < (8.5 * segmentDuration)){
                 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-            }
+            }            
             else {
                 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
             }

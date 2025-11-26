@@ -23,8 +23,8 @@
 #include "textRenderer.h"
 #include "utils.h"
 
-#define WINDOW_WIDTH 1920.0
-#define WINDOW_HEIGTH 1080.0
+#define WINDOW_WIDTH 3840.0f
+#define WINDOW_HEIGHT 2160.0f
 
 TextRenderer textRenderer;
 std::map<GLchar, Character> Characters;
@@ -43,7 +43,7 @@ int main(int argc, char const *argv[])
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_SAMPLES, 8);
 
-    GLFWwindow *window = glfwCreateWindow(1920, 1080, "Triangle Points", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Triangle Points Demo", NULL, NULL);
 	if(window == NULL){
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
@@ -56,7 +56,7 @@ int main(int argc, char const *argv[])
 		return -1;
 	}
 
-    glViewport(0, 0, 1920, 1080);
+    glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glEnable(GL_MULTISAMPLE);
     
@@ -65,7 +65,7 @@ int main(int argc, char const *argv[])
         layout (location = 0) in vec3 aPos;
         void main() {
             gl_Position = vec4(aPos, 1.0);
-            gl_PointSize = 15.0f; // Size in pixels
+            gl_PointSize = 35.0f; // Size in pixels
         }
     )";
 
@@ -190,103 +190,111 @@ int main(int argc, char const *argv[])
     std::string topText, bottomLeftText, bottomRightText;
     unsigned int precisionVal = 1;
 
-    topTextCoords.x = mapValue(-0.075f, -1.0f, 1.0f, 0.0f, 1920.0f);
-    topTextCoords.y = mapValue(0.59f, -1.0f, 1.0f, 0.0f, 1080.0f);
+    topTextCoords.x = mapValue(-0.06f, -1.0f, 1.0f, 0.0f, WINDOW_WIDTH);
+    topTextCoords.y = mapValue(0.60f, -1.0f, 1.0f, 0.0f, WINDOW_HEIGHT);
     topText = glmToText(top, precisionVal);
 
     glm::vec3 bottomLeftTextCoords = glm::vec3(0.0f, 0.0f, 0.0f);
-    bottomLeftTextCoords.x = mapValue(-0.6, -1.0f, 1.0f, 0.0f, 1920.0f);
-    bottomLeftTextCoords.y = mapValue(-0.59f, -1.0f, 1.0f, 0.0f, 1080.0f);
+    bottomLeftTextCoords.x = mapValue(-0.575f, -1.0f, 1.0f, 0.0f, WINDOW_WIDTH);
+    bottomLeftTextCoords.y = mapValue(-0.59f, -1.0f, 1.0f, 0.0f, WINDOW_HEIGHT);
     bottomLeftText = glmToText(bottomLeft, precisionVal);
 
     glm::vec3 bottomRightTextCoords = glm::vec3(0.0f, 0.0f, 0.0f);
-    bottomRightTextCoords.x = mapValue(0.415f, -1.0f, 1.0f, 0.0f, 1920.0f);
-    bottomRightTextCoords.y = mapValue(-0.59f, -1.0f, 1.0f, 0.0f, 1080.0f);
+    bottomRightTextCoords.x = mapValue(0.435f, -1.0f, 1.0f, 0.0f, WINDOW_WIDTH);
+    bottomRightTextCoords.y = mapValue(-0.59f, -1.0f, 1.0f, 0.0f, WINDOW_HEIGHT);
     bottomRightText = glmToText(bottomRight, precisionVal);
 
     float startTime = glfwGetTime();
     unsigned int pointCounts = 0;
 	while(!glfwWindowShouldClose(window)){
 
-    glClearColor(0.10, 0.10, 0.10, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);    
+        glClearColor(0.10, 0.10, 0.10, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);    
 
-    float currentTime = glfwGetTime();
-    float totalAnimDuration = 10.0f;
-    float elapsed = currentTime - startTime;
-    float segmentDuration = 3.0f;
+        float currentTime = glfwGetTime();
+        float totalAnimDuration = 10.0f;
+        float elapsed = currentTime - startTime;
+        float segmentDuration = 2.5f;
 
-    std::vector<glm::vec3> drawPoints;
+        std::vector<glm::vec3> drawPoints;
 
-    std::string text = "";
-    std::string topTextString = "";
-    std::string bottomRightTextString = "";
+        std::string text = "";
+        std::string topTextString = "";
+        std::string bottomRightTextString = "";
 
-    if (elapsed < segmentDuration) {
-        drawPoints.push_back(bottomLeft);
-        pointCounts = 1;
-    } else if (elapsed < 1.5 * segmentDuration) {
-        drawPoints.push_back(bottomLeft);
-        text = "(" + std::to_string(bottomLeft.x) + " " + std::to_string(bottomLeft.y) + ")";
-        text = std::to_string(bottomLeft.x).substr(0, std::to_string(bottomLeft.x).find(".") + precisionVal + 1);
-        textRenderer.renderText(Characters, textVAO, textVBO, bottomLeftText, bottomLeftTextCoords.x, bottomLeftTextCoords.y, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-    } 
-    else if (elapsed < 2 * segmentDuration) {
-        drawPoints.push_back(bottomLeft);
-        drawPoints.push_back(top);
-        pointCounts = 2;
-        //text = glm::to_string(bottomLeft.);
-        topTextString = glm::to_string(top);
-        textRenderer.renderText(Characters, textVAO, textVBO, bottomLeftText, bottomLeftTextCoords.x, bottomLeftTextCoords.y, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-        textRenderer.renderText(Characters, textVAO, textVBO, topText, topTextCoords.x, topTextCoords.y, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-    } else if (elapsed < 3 * segmentDuration) {
-        drawPoints.push_back(bottomLeft);
-        drawPoints.push_back(top);
-        drawPoints.push_back(bottomRight);
-        pointCounts = 3;
+        if (elapsed < segmentDuration) {
+            drawPoints.push_back(bottomLeft);
+            pointCounts = 1;
+        }
+        else if (elapsed < 1.5 * segmentDuration) {
+            drawPoints.push_back(bottomLeft);
+            textRenderer.renderText(Characters, textVAO, textVBO, bottomLeftText, bottomLeftTextCoords.x, bottomLeftTextCoords.y, 1.5f, glm::vec3(0.5, 0.8f, 0.2f));
+        } 
+        else if (elapsed < 2 * segmentDuration) {
+            drawPoints.push_back(bottomLeft);
+            drawPoints.push_back(top);
+            pointCounts = 2;
+            textRenderer.renderText(Characters, textVAO, textVBO, bottomLeftText, bottomLeftTextCoords.x, bottomLeftTextCoords.y, 1.5f, glm::vec3(0.5, 0.8f, 0.2f));
+        }
+        else if (elapsed < 2.5 * segmentDuration){
+            drawPoints.push_back(bottomLeft);
+            drawPoints.push_back(top);
+            pointCounts = 2;
+            textRenderer.renderText(Characters, textVAO, textVBO, bottomLeftText, bottomLeftTextCoords.x, bottomLeftTextCoords.y, 1.5f, glm::vec3(0.5, 0.8f, 0.2f));
+            textRenderer.renderText(Characters, textVAO, textVBO, topText, topTextCoords.x, topTextCoords.y, 1.5f, glm::vec3(0.5, 0.8f, 0.2f));
+        }
+        else if (elapsed < 3 * segmentDuration) {
+            drawPoints.push_back(bottomLeft);
+            drawPoints.push_back(top);
+            drawPoints.push_back(bottomRight);
+            pointCounts = 3;
 
-        text = glm::to_string(bottomLeft);
-        topTextString = glm::to_string(top);
-        bottomRightTextString = glm::to_string(bottomRight);
-        textRenderer.renderText(Characters, textVAO, textVBO, bottomLeftText, bottomLeftTextCoords.x, bottomLeftTextCoords.y, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-        textRenderer.renderText(Characters, textVAO, textVBO, topText, topTextCoords.x, topTextCoords.y, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-        textRenderer.renderText(Characters, textVAO, textVBO, bottomRightText, bottomRightTextCoords.x, bottomRightTextCoords.y, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-    } else {
-        drawPoints.push_back(bottomLeft);
-        drawPoints.push_back(top);
-        drawPoints.push_back(bottomRight);
-        pointCounts = 3;
+            textRenderer.renderText(Characters, textVAO, textVBO, bottomLeftText, bottomLeftTextCoords.x, bottomLeftTextCoords.y, 1.5f, glm::vec3(0.5, 0.8f, 0.2f));
+            textRenderer.renderText(Characters, textVAO, textVBO, topText, topTextCoords.x, topTextCoords.y, 1.5f, glm::vec3(0.5, 0.8f, 0.2f));
+        }
+        else if (elapsed < 3.5 * segmentDuration){
+            drawPoints.push_back(bottomLeft);
+            drawPoints.push_back(top);
+            drawPoints.push_back(bottomRight);
+            pointCounts = 3;
 
-        text = glm::to_string(bottomLeft);
-        topTextString = glm::to_string(top);
-        bottomRightTextString = glm::to_string(bottomRight);
-        textRenderer.renderText(Characters, textVAO, textVBO, bottomLeftText, bottomLeftTextCoords.x, bottomLeftTextCoords.y, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-        textRenderer.renderText(Characters, textVAO, textVBO, topText, topTextCoords.x, topTextCoords.y, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-        textRenderer.renderText(Characters, textVAO, textVBO, bottomRightText, bottomRightTextCoords.x, bottomRightTextCoords.y, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-    }
+            textRenderer.renderText(Characters, textVAO, textVBO, bottomLeftText, bottomLeftTextCoords.x, bottomLeftTextCoords.y, 1.5f, glm::vec3(0.5, 0.8f, 0.2f));
+            textRenderer.renderText(Characters, textVAO, textVBO, topText, topTextCoords.x, topTextCoords.y, 1.5f, glm::vec3(0.5, 0.8f, 0.2f));
+            textRenderer.renderText(Characters, textVAO, textVBO, bottomRightText, bottomRightTextCoords.x, bottomRightTextCoords.y, 1.5f, glm::vec3(0.5, 0.8f, 0.2f));
+        }
+        else {
+            drawPoints.push_back(bottomLeft);
+            drawPoints.push_back(top);
+            drawPoints.push_back(bottomRight);
+            pointCounts = 3;
 
-    GLuint VAO, VBO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    // Wrong one
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(drawPoints), &drawPoints[0], GL_STATIC_DRAW);
-    glBufferData(GL_ARRAY_BUFFER, drawPoints.size() * sizeof(glm::vec3), drawPoints.data(), GL_STATIC_DRAW);
+            textRenderer.renderText(Characters, textVAO, textVBO, bottomLeftText, bottomLeftTextCoords.x, bottomLeftTextCoords.y, 1.5f, glm::vec3(0.5, 0.8f, 0.2f));
+            textRenderer.renderText(Characters, textVAO, textVBO, topText, topTextCoords.x, topTextCoords.y, 1.5f, glm::vec3(0.5, 0.8f, 0.2f));
+            textRenderer.renderText(Characters, textVAO, textVBO, bottomRightText, bottomRightTextCoords.x, bottomRightTextCoords.y, 1.5f, glm::vec3(0.5, 0.8f, 0.2f));
+        }
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+        GLuint VAO, VBO;
+        glGenVertexArrays(1, &VAO);
+        glGenBuffers(1, &VBO);
+        
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        // Wrong one
+        // glBufferData(GL_ARRAY_BUFFER, sizeof(drawPoints), &drawPoints[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, drawPoints.size() * sizeof(glm::vec3), drawPoints.data(), GL_STATIC_DRAW);
 
-    glEnable(GL_PROGRAM_POINT_SIZE);  // This is important!
-    glUseProgram(shaderProgram);
-    glBindVertexArray(VAO);
-    glDrawArrays(GL_POINTS, 0, pointCounts);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
 
-    glfwSwapBuffers(window);
-    glfwPollEvents();
+        glEnable(GL_PROGRAM_POINT_SIZE);  // This is important!
+        glUseProgram(shaderProgram);
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_POINTS, 0, pointCounts);
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
     }
 
     glDeleteVertexArrays(1, &textVAO);

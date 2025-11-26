@@ -3,6 +3,9 @@
 #include <fstream>
 #include <sstream>
 
+#define WINDOW_WIDTH 3840.0f
+#define WINDOW_HEIGHT 2160.0f
+
 void TextRenderer::renderText(std::map<GLchar, Character> &Characters, GLuint &VAO, GLuint &VBO, std::string text, float x, float y, float scale, glm::vec3 color)
 {   
     const char* vertexShaderSource = R"(
@@ -61,7 +64,7 @@ void TextRenderer::renderText(std::map<GLchar, Character> &Characters, GLuint &V
     // activate corresponding render state	
     glUseProgram(textShaderProgram);
     glUniform3f(glGetUniformLocation(textShaderProgram, "textColor"), color.x, color.y, color.z);
-    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(1920), 0.0f, static_cast<float>(1080));
+    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(WINDOW_WIDTH), 0.0f, static_cast<float>(WINDOW_HEIGHT));
     glUniformMatrix4fv(glGetUniformLocation(textShaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(VAO);

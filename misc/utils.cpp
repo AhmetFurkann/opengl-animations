@@ -25,7 +25,6 @@ Point polartToCartesien(float centerX, float centerY, float radius, float angle)
 {
   float radian = degreeToRad(angle);
   Point point;
-  std::cout << "DEBUG Radian: " << radian << std::endl;
   point.x = centerX + radius * cos(radian);
   point.y = centerY + radius * sin(radian);
   return point;
